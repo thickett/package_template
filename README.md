@@ -1,6 +1,6 @@
 This is a generic starting point for creating python packages.
 
-note that we do not do any intesence checks as part of the ci/cd; we just lint and format, and run any tests. The package is pushed to pypi through manual running of the workflow only.
+**NOTE**: This template is designed to enable you to quickly create packages for your code, i.e if you have lots of functionality that you find your self copying around to different projects, or re-writing. Do not use this for larger projects where there are many contributors and is to be used by external consumers; we have no type checking, we do not check for duplication, we do not inspect the code or any other such actions as part of ci/cd.
 
 ### How to use
 
