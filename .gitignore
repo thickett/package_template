@@ -1,0 +1,12 @@
+__pycache__/
+.vscode/
+# mypy
+.mypy_cache/
+dmypy.json
+dmypy.log
+
+# ruff
+.ruff_cache/
+
+# unittest
+.pytest_cache/

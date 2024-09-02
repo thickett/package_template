@@ -1,0 +1,50 @@
+name: test + publish
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install bump2version twine wheel
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          python -m unittest discover tests
+      - name: Set up CI/CD Git user
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Set up Git remote
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git     
+      - name: Bump version and tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          bump2version patch  # or minor or major, depending on the change
+          git push && git push --tags
+
+      - name: Build and publish to PyPI
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TWINE_USERNAME: __TOKEN__
+          TWINE_PASSWORD: ${{secrets.PYPI_TOKEN}}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/* --skip-existing --verbose
